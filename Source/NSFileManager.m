@@ -925,6 +925,22 @@ static gs_mutex_t       classLock = GS_MUTEX_INIT_STATIC;
   return [NSURL fileURLWithPath: path];
 }
 
+- (NSArray<NSURL *> *)URLsForDirectory: (NSSearchPathDirectory)directory
+			     inDomains: (NSSearchPathDomainMask)domain
+{
+  NSArray<NSString *> *paths =
+    NSSearchPathForDirectoriesInDomains(directory, domain, YES);
+  NSMutableArray<NSURL *> *urls =
+    [[NSMutableArray alloc] initWithCapacity: paths.count];
+
+  [paths enumerateObjectsUsingBlock: ^(NSString *path, NSUInteger idx, BOOL *stop){
+    [urls addObject: [NSURL fileURLWithPath: path]];
+  }];
+
+  RELEASE(paths);
+  return urls;
+}
+
 - (NSDirectoryEnumerator*) enumeratorAtURL: (NSURL*)url
                 includingPropertiesForKeys: (NSArray*)keys 
                                    options: (NSDirectoryEnumerationOptions)mask 
